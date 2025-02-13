@@ -737,6 +737,33 @@ async function handleV2SignTx(req: express.Request) {
   }
 }
 
+export async function handleStaking(req: express.Request): Promise<StakingRequest> {
+ const bitgo = req.bitgo;
+ const coin = bitgo.coin(req.params.coin);
+ const wallet = await coin.wallets().get({ id: req.params.id });
+ const stakingWallet = wallet.toStakingWallet();
+ const stake = await stakingWallet.stake({
+   amount: req.body.amount,
+   validator: req.body.validator,
+ });
+ return stake;
+}
+
+export async function handleUnstaking(req: express.Request): Promise<StakingRequest> {
+ const bitgo = req.bitgo;
+ const coin = bitgo.coin(req.params.coin);
+ const wallet = await coin.wallets().get({ id: req.params.id });
+ const stakingWallet = wallet.toStakingWallet();
+ const unstake = await stakingWallet.unstake({
+   amount: req.body.amount,
+   clientId: req.body.clientId,
+   delegationId: req.body.delegationId,
+ });
+
+ return unstake;
+}
+
+
 /**
  * handle wallet recover token
  * @param req
@@ -1483,6 +1510,9 @@ export function setupAPIRoutes(app: express.Application, config: Config): void {
     prepareBitGo(config),
     promiseWrapper(handleCalculateMinerFeeInfo)
   );
+
+  app.post('/api/staking/v1/:coin/wallets/:id/stake', parseBody, prepareBitGo(config), promiseWrapper(handleStaking));
+  app.post('/api/staking/v1/:coin/wallets/:id/unstake', parseBody, prepareBitGo(config), promiseWrapper(handleUnstaking));
 
   app.post('/api/v1/keychain/local', parseBody, prepareBitGo(config), promiseWrapper(handleCreateLocalKeyChain));
   app.post('/api/v1/keychain/derive', parseBody, prepareBitGo(config), promiseWrapper(handleDeriveLocalKeyChain));
