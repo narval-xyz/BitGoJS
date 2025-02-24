@@ -1,6 +1,6 @@
 {
   "name": "@bitgo/secp256k1",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Low-level cryptographic methods used in BitGo packages for the secp256k1 curve",
   "main": "./dist/src/index.js",
   "engines": {
@@ -39,7 +39,6 @@
     "ecpair": "npm:@bitgo/ecpair@2.1.0-rc.0"
   },
   "devDependencies": {
-    "@types/elliptic": "^6.4.12",
     "@types/node": "^16.18.46"
   },
   "lint-staged": {

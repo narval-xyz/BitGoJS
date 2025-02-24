@@ -60,12 +60,6 @@ describe('ATOM', function () {
       addressDetails.memoId.should.equal('2');
     });
 
-    it('should throw on invalid memo id address', () => {
-      (() => {
-        basecoin.getAddressDetails(address.invalidMemoIdAddress);
-      }).should.throw();
-    });
-
     it('should throw on multiple memo id address', () => {
       (() => {
         basecoin.getAddressDetails(address.multipleMemoIdAddress);
@@ -93,7 +87,6 @@ describe('ATOM', function () {
       should.equal(utils.isValidAddress(undefined as unknown as string), false);
       should.equal(utils.isValidAddress(''), false);
       should.equal(utils.isValidAddress(address.validMemoIdAddress), true);
-      should.equal(utils.isValidAddress(address.invalidMemoIdAddress), false);
       should.equal(utils.isValidAddress(address.multipleMemoIdAddress), false);
     });
     it('should validate validator addresses correctly', () => {
@@ -471,6 +464,30 @@ describe('ATOM', function () {
       const atomTxnJson = atomTxn.toJson();
       const sendMessage = atomTxnJson.sendMessages[0].value as SendMessage;
       const balance = new BigNumber(testBalanceDkls);
+      const gasAmount = new BigNumber(GAS_AMOUNT);
+      const actualBalance = balance.minus(gasAmount);
+      should.equal(sendMessage.amount[0].amount, actualBalance.toFixed());
+    });
+
+    it('should recover funds for Unsigned Sweep Transaction', async function () {
+      const res = await basecoin.recover({
+        userKey: wrwUser.userKey,
+        backupKey: wrwUser.backupKey,
+        bitgoKey: wrwUser.bitgoKey,
+        walletPassphrase: wrwUser.walletPassphrase,
+        recoveryDestination: destinationAddress,
+      });
+      res.should.not.be.empty();
+      res.should.hasOwnProperty('serializedTx');
+      sandBox.assert.calledOnce(basecoin.getAccountBalance);
+      sandBox.assert.calledOnce(basecoin.getAccountDetails);
+      sandBox.assert.calledOnce(basecoin.getChainId);
+
+      const unsignedSweepTxnDeserialize = new CosmosTransaction(coin, utils);
+      unsignedSweepTxnDeserialize.enrichTransactionDetailsFromRawTransaction(res.serializedTx);
+      const unsignedSweepTxnJson = unsignedSweepTxnDeserialize.toJson();
+      const sendMessage = unsignedSweepTxnJson.sendMessages[0].value as SendMessage;
+      const balance = new BigNumber(testBalance);
       const gasAmount = new BigNumber(GAS_AMOUNT);
       const actualBalance = balance.minus(gasAmount);
       should.equal(sendMessage.amount[0].amount, actualBalance.toFixed());

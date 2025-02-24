@@ -53,6 +53,14 @@ export const erc20Coins = [
     UnderlyingAsset['eth:hard']
   ),
   erc20(
+    '2b715a62-6527-4586-9aa9-39c3ef154972',
+    'eth:mon',
+    'Mon',
+    18,
+    '0xc555d625828c4527d477e595ff1dd5801b4a600e', // https://etherscan.io/token/0xc555d625828c4527d477e595ff1dd5801b4a600e
+    UnderlyingAsset['eth:mon']
+  ),
+  erc20(
     'a9fbae2c-d9c7-47b7-9602-ff6316a1ca00',
     'eth:hegic',
     'Hegic',
@@ -2992,7 +3000,7 @@ export const erc20Coins = [
   erc20(
     '108a64ac-9be8-4bf9-a683-3f30d49708de',
     'inst',
-    'Instadapp',
+    'Fluid',
     18,
     '0x6f40d4a6237c257fff2db00fa0510deeecd303eb',
     UnderlyingAsset.INST

@@ -12,6 +12,7 @@ import {
   erc20CompatibleAccountCoin,
   erc721,
   fiat,
+  gasTankAccount,
   hederaCoin,
   hederaToken,
   nonstandardToken,
@@ -1089,7 +1090,7 @@ export const coins = CoinMap.fromCoins([
   account(
     'e6ecb22e-0ae8-463a-b2fb-61502fd54240',
     'txdc',
-    'Testnet XDC chain',
+    'Testnet XDC',
     Networks.test.xdc,
     18,
     UnderlyingAsset.XDC,
@@ -1109,7 +1110,7 @@ export const coins = CoinMap.fromCoins([
   account(
     'b18517e3-2fba-44df-be39-7ba062d14895',
     'twemix',
-    'Testnet wemix chain',
+    'Testnet wemix',
     Networks.test.wemix,
     18,
     UnderlyingAsset.WEMIX,
@@ -1119,7 +1120,7 @@ export const coins = CoinMap.fromCoins([
   account(
     '202caf8f-4d43-4208-b206-8231f555c518',
     'flr',
-    'flare',
+    'Flare',
     Networks.main.flr,
     18,
     UnderlyingAsset.FLR,
@@ -1129,7 +1130,7 @@ export const coins = CoinMap.fromCoins([
   account(
     '338fc340-08be-4796-9c04-96e5a5078393',
     'tflr',
-    'Testnet flare chain',
+    'Testnet flare',
     Networks.test.flr,
     18,
     UnderlyingAsset.FLR,
@@ -1149,14 +1150,14 @@ export const coins = CoinMap.fromCoins([
   account(
     'c6b8f90b-1f89-4d26-b296-4097927f6b30',
     'tsgb',
-    'Testnet songbird chain',
+    'Testnet songbird',
     Networks.test.sgb,
     18,
     UnderlyingAsset.SGB,
     BaseUnit.ETH,
     EVM_FEATURES
   ),
-  account(
+  gasTankAccount(
     '75a71e9c-e3a0-4852-8e4b-9613ffed2a4c',
     'apt',
     'Aptos',
@@ -1165,9 +1166,11 @@ export const coins = CoinMap.fromCoins([
     UnderlyingAsset.APT,
     BaseUnit.APT,
     APT_FEATURES,
-    KeyCurve.Ed25519
+    KeyCurve.Ed25519,
+    400,
+    1000
   ),
-  account(
+  gasTankAccount(
     '7aca10bf-79dd-428b-aeb6-54f03f9aec0f',
     'tapt',
     'Testnet Aptos',
@@ -1176,7 +1179,9 @@ export const coins = CoinMap.fromCoins([
     UnderlyingAsset.APT,
     BaseUnit.APT,
     APT_FEATURES,
-    KeyCurve.Ed25519
+    KeyCurve.Ed25519,
+    400,
+    1000
   ),
   account(
     'a08453f0-a3be-4875-b82b-6b0c9bfa53e6',
@@ -1251,7 +1256,6 @@ export const coins = CoinMap.fromCoins([
     Networks.main.hedera,
     8,
     UnderlyingAsset.HBAR,
-    '0.0.3',
     HBAR_FEATURES
   ),
   hederaCoin(
@@ -1261,7 +1265,6 @@ export const coins = CoinMap.fromCoins([
     Networks.test.hedera,
     8,
     UnderlyingAsset.HBAR,
-    '0.0.3',
     HBAR_FEATURES
   ),
   hederaToken(
@@ -1271,7 +1274,6 @@ export const coins = CoinMap.fromCoins([
     Networks.main.hedera,
     6,
     UnderlyingAsset.USDC,
-    '0.0.3',
     '0.0.456858',
     '0.0.456858',
     AccountCoin.DEFAULT_FEATURES
@@ -1283,7 +1285,6 @@ export const coins = CoinMap.fromCoins([
     Networks.main.hedera,
     6,
     UnderlyingAsset.XSGD,
-    '0.0.3',
     '0.0.1985922',
     '0.0.1985922',
     AccountCoin.DEFAULT_FEATURES
@@ -1295,7 +1296,6 @@ export const coins = CoinMap.fromCoins([
     Networks.main.hedera,
     2,
     UnderlyingAsset.BCT,
-    '0.0.3',
     '0.0.1958126',
     '0.0.1958126',
     AccountCoin.DEFAULT_FEATURES
@@ -1307,7 +1307,6 @@ export const coins = CoinMap.fromCoins([
     Networks.main.hedera,
     6,
     UnderlyingAsset.CLXY,
-    '0.0.3',
     '0.0.859814',
     '0.0.859814',
     AccountCoin.DEFAULT_FEATURES
@@ -1319,7 +1318,6 @@ export const coins = CoinMap.fromCoins([
     Networks.test.hedera,
     6,
     UnderlyingAsset.USDC,
-    '0.0.3',
     '0.0.13078',
     '0.0.13078',
     AccountCoin.DEFAULT_FEATURES
@@ -2788,7 +2786,6 @@ export const coins = CoinMap.fromCoins([
     'USDC',
     6,
     UnderlyingAsset['algo:USDC-31566704'],
-    'https://allo.info/asset/31566704/token',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'USDC'
@@ -2800,7 +2797,6 @@ export const coins = CoinMap.fromCoins([
     'Algorand USDT',
     6,
     UnderlyingAsset['algo:USDt-312769'],
-    'https://allo.info/asset/312769/token',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'USDt'
@@ -2812,7 +2808,6 @@ export const coins = CoinMap.fromCoins([
     'MCAU',
     5,
     UnderlyingAsset['algo:MCAU-6547014'],
-    'https://allo.info/asset/6547014/token',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'MCAU'
@@ -2824,7 +2819,6 @@ export const coins = CoinMap.fromCoins([
     'VCAD',
     2,
     UnderlyingAsset['algo:VCAD-438505559'],
-    'https://allo.info/asset/438505559/token',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'VCAD'
@@ -2836,7 +2830,6 @@ export const coins = CoinMap.fromCoins([
     'QCAD',
     2,
     UnderlyingAsset['algo:QCAD-84507107'],
-    'https://allo.info/asset/84507107/token',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'QCAD'
@@ -3005,7 +2998,6 @@ export const coins = CoinMap.fromCoins([
     'USDC',
     6,
     UnderlyingAsset['talgo:USDC-10458941'],
-    'https://someurl.com/',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'USDC'
@@ -3017,7 +3009,6 @@ export const coins = CoinMap.fromCoins([
     'Testnet Algorand USDT',
     6,
     UnderlyingAsset['talgo:USDt-180447'],
-    'https://someurl.com/',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'USDt'
@@ -3029,7 +3020,6 @@ export const coins = CoinMap.fromCoins([
     'Unison',
     2,
     UnderlyingAsset['talgo:USON-16026728'],
-    'https://someurl.com/',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'USON'
@@ -3041,7 +3031,6 @@ export const coins = CoinMap.fromCoins([
     'Sparrow',
     4,
     UnderlyingAsset['talgo:SPRW-16026732'],
-    'https://someurl.sparrow.com/',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'SPRW'
@@ -3053,7 +3042,6 @@ export const coins = CoinMap.fromCoins([
     'Kalki',
     8,
     UnderlyingAsset['talgo:KAL-16026733'],
-    'https://someurl.kalki.com/',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'KAL'
@@ -3065,7 +3053,6 @@ export const coins = CoinMap.fromCoins([
     'JPT',
     6,
     UnderlyingAsset['talgo:JPT-162085446'],
-    'https://www.cav3.sg',
     AccountCoin.DEFAULT_FEATURES,
     '',
     'JPT'
@@ -3834,6 +3821,26 @@ export const coins = CoinMap.fromCoins([
     'J3NKxxXZcnNiMjKw9hYb2K4LUxgwB6t1FtPtQVsv3KFr',
     UnderlyingAsset['sol:spx'],
     SOL_TOKEN_FEATURES_WITH_FRANKFURT
+  ),
+  solToken(
+    '08ba2640-c8a6-466f-9225-e706a750a465',
+    'sol:virtual',
+    'Virtual Protocol',
+    9,
+    '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y', // https://solscan.io/token/3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y
+    '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
+    UnderlyingAsset['sol:virtual'],
+    SOL_TOKEN_FEATURES
+  ),
+  solToken(
+    '2d3009df-9534-43c7-8661-e3fe00a023f5',
+    'sol:nyan',
+    'NYAN',
+    9,
+    'NYANpAp9Cr7YarBNrby7Xx4xU6No6JKTBuohNA3yscP', // https://solscan.io/token/NYANpAp9Cr7YarBNrby7Xx4xU6No6JKTBuohNA3yscP
+    'NYANpAp9Cr7YarBNrby7Xx4xU6No6JKTBuohNA3yscP',
+    UnderlyingAsset['sol:nyan'],
+    SOL_TOKEN_FEATURES
   ),
   solToken(
     '53e6b4e7-6ff6-40d5-8737-af2b31fa0bc0',
@@ -7422,6 +7429,15 @@ export const coins = CoinMap.fromCoins([
     POLYGON_TOKEN_FEATURES
   ),
   tpolygonErc20(
+    'e988a1a1-e22e-4649-986e-7718e503f047',
+    'tpolygon:testcopm',
+    'Test ERC20 Token 10 Decimals',
+    18,
+    '0x866022aa0489bd84fd2b3e0320ba988d9385d439', // https://polygonscan.com/token/0x866022aa0489bd84fd2B3e0320bA988d9385d439
+    UnderlyingAsset['tpolygon:testcopm'],
+    POLYGON_TOKEN_FEATURES
+  ),
+  tpolygonErc20(
     '9da1d62e-2220-4974-a9d9-191c34dfda4e',
     'tpolygon:link',
     'Polygon Test LINK',
@@ -7900,8 +7916,7 @@ export const coins = CoinMap.fromCoins([
     'bera:ibera',
     'Infrared Bera',
     18,
-    // TODO: the mainnet contract address is still not available, adding placeholder here
-    '0x5bdc3cae6fb270ef07579c428bb630e73c8d623a',
+    '0x9b6761bf2397bb5a6624a856cc84a3a14dcd3fe5',
     UnderlyingAsset['bera:ibera']
   ),
   tberaErc20(
@@ -8134,6 +8149,18 @@ export const coins = CoinMap.fromCoins([
     'CETUS',
     '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
     UnderlyingAsset['sui:cetus'],
+    SUI_TOKEN_FEATURES
+  ),
+  suiToken(
+    '9b6a8372-5d8a-41d1-8074-d53e59b2e513',
+    'sui:wal',
+    'Walrus',
+    9,
+    '0x356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59',
+    'wal',
+    'WAL',
+    '0x356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59::wal::WAL',
+    UnderlyingAsset['sui:wal'],
     SUI_TOKEN_FEATURES
   ),
   tsuiToken(

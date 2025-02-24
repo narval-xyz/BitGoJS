@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-icp@1.3.0...@bitgo/sdk-coin-icp@1.4.0) (2025-02-20)
+
+### Features
+
+- **sdk-coin-icp:** refactor key pair generation to use utility function ([93d84d4](https://github.com/BitGo/BitGoJS/commit/93d84d48a3e6287959626e69bcce1c430d82df7a))
+
+# [1.3.0](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-icp@1.2.1...@bitgo/sdk-coin-icp@1.3.0) (2025-02-19)
+
+### Features
+
+- **sdk-coin-icp:** refactor getAddressFromPublicKey to use utils method ([702ffe8](https://github.com/BitGo/BitGoJS/commit/702ffe88376c7a19ec73f8e2e066cc707bcecc25))
+
 ## [1.2.1](https://github.com/BitGo/BitGoJS/compare/@bitgo/sdk-coin-icp@1.2.0...@bitgo/sdk-coin-icp@1.2.1) (2025-02-11)
 
 **Note:** Version bump only for package @bitgo/sdk-coin-icp

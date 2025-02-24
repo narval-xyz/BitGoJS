@@ -18,7 +18,7 @@ import {
   Network,
 } from '@aptos-labs/ts-sdk';
 import utils from '../../src/lib/utils';
-import { coins } from '@bitgo/statics';
+import { coins, GasTankAccountCoin } from '@bitgo/statics';
 
 describe('APT:', function () {
   let bitgo: TestBitGoAPI;
@@ -52,6 +52,8 @@ describe('APT:', function () {
   it('should return the right info', function () {
     const apt = bitgo.coin('apt');
     const tapt = bitgo.coin('tapt');
+    const aptStatics = coins.get('apt') as GasTankAccountCoin;
+    const taptStatics = coins.get('tapt') as GasTankAccountCoin;
 
     apt.getChain().should.equal('apt');
     apt.getFamily().should.equal('apt');
@@ -62,6 +64,11 @@ describe('APT:', function () {
     tapt.getFamily().should.equal('apt');
     tapt.getFullName().should.equal('Testnet Aptos');
     tapt.getBaseFactor().should.equal(1e8);
+
+    aptStatics.gasTankLowBalanceAlertFactor.should.equal(400);
+    taptStatics.gasTankLowBalanceAlertFactor.should.equal(400);
+    aptStatics.gasTankMinBalanceRecommendationFactor.should.equal(1000);
+    taptStatics.gasTankMinBalanceRecommendationFactor.should.equal(1000);
   });
 
   it('is valid pub', function () {
@@ -123,6 +130,20 @@ describe('APT:', function () {
       },
     ];
 
+    const transferFungibleInputResponse = [
+      {
+        address: testData.fungibleSender.address,
+        amount: testData.FUNGIBLE_TOKEN_AMOUNT.toString(),
+      },
+    ];
+
+    const tranferFungibleOutputResponse = [
+      {
+        address: testData.fungibleTokenRecipients[1].address,
+        amount: testData.fungibleTokenRecipients[1].amount,
+      },
+    ];
+
     it('should parse a transfer transaction', async function () {
       const parsedTransaction = await basecoin.parseTransaction({
         txHex: testData.TRANSACTION_USING_TRANSFER_COINS,
@@ -131,6 +152,17 @@ describe('APT:', function () {
       parsedTransaction.should.deepEqual({
         inputs: transferInputsResponse,
         outputs: transferOutputsResponse,
+      });
+    });
+
+    it('should parse signed fungible transaction, only work if amount parsing correctly done from payload', async function () {
+      const parsedTransaction = await basecoin.parseTransaction({
+        txHex: testData.FUNGIBLE_SERIALIZED_TX_HEX,
+      });
+
+      parsedTransaction.should.deepEqual({
+        inputs: transferFungibleInputResponse,
+        outputs: tranferFungibleOutputResponse,
       });
     });
 

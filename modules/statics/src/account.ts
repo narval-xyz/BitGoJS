@@ -1,5 +1,5 @@
 import { BaseCoin, BaseUnit, CoinFeature, CoinKind, KeyCurve, UnderlyingAsset } from './base';
-import { DOMAIN_PATTERN } from './constants';
+import { DOMAIN_PATTERN, HEDERA_NODE_ACCCOUNT_ID } from './constants';
 import { InvalidContractAddressError, InvalidDomainError } from './errors';
 import { AccountNetwork, BaseNetwork, EthereumNetwork, Networks, TronNetwork } from './networks';
 
@@ -66,6 +66,13 @@ export class AccountCoin extends BaseCoin {
   }
 }
 
+export interface GasTankAccountConstructorOptions extends AccountConstructorOptions {
+  // low gas tank balance alert threshold is calculated as (feeEstimate x gasTankLowBalanceAlertFactor)
+  gasTankLowBalanceAlertFactor: number;
+  // min gas tank balance recommendation is calculated as (feeEstimate x gasTankMinBalanceRecommendationFactor)
+  gasTankMinBalanceRecommendationFactor: number;
+}
+
 export interface Erc20ConstructorOptions extends AccountConstructorOptions {
   contractAddress: string;
 }
@@ -82,10 +89,6 @@ export interface HederaTokenConstructorOptions extends AccountConstructorOptions
   nodeAccountId: string;
   tokenId: string;
   contractAddress: string;
-}
-
-export interface AlgoCoinConstructorOptions extends AccountConstructorOptions {
-  tokenURL: string;
 }
 
 export interface EosCoinConstructorOptions extends AccountConstructorOptions {
@@ -135,6 +138,18 @@ export class AccountCoinToken extends AccountCoin {
     super({
       ...options,
     });
+  }
+}
+
+export class GasTankAccountCoin extends AccountCoin {
+  public gasTankLowBalanceAlertFactor: number;
+  public gasTankMinBalanceRecommendationFactor: number;
+  constructor(options: GasTankAccountConstructorOptions) {
+    super({
+      ...options,
+    });
+    this.gasTankLowBalanceAlertFactor = options.gasTankLowBalanceAlertFactor;
+    this.gasTankMinBalanceRecommendationFactor = options.gasTankMinBalanceRecommendationFactor;
   }
 }
 
@@ -296,21 +311,10 @@ export class HederaToken extends AccountCoinToken {
  *
  */
 export class AlgoCoin extends AccountCoinToken {
-  public tokenURL: string;
-  constructor(options: AlgoCoinConstructorOptions) {
+  constructor(options: AccountConstructorOptions) {
     super({
       ...options,
     });
-
-    if (options.tokenURL) {
-      try {
-        new URL(options.tokenURL);
-      } catch (ex) {
-        throw new InvalidDomainError(options.name, options.tokenURL);
-      }
-    }
-
-    this.tokenURL = options.tokenURL;
   }
 }
 
@@ -328,7 +332,7 @@ export class EosCoin extends AccountCoinToken {
       ...options,
     });
 
-    this.contractName = options.contractName;
+    this.contractName = options.contractAddress;
     this.contractAddress = options.contractAddress;
   }
 }
@@ -347,7 +351,7 @@ export class SolCoin extends AccountCoinToken {
       ...options,
     });
 
-    this.tokenAddress = options.tokenAddress;
+    this.tokenAddress = options.contractAddress;
     this.contractAddress = options.contractAddress;
   }
 }
@@ -558,6 +562,60 @@ export function account(
       isToken,
       asset,
       primaryKeyCurve,
+    })
+  );
+}
+
+/**
+ * Factory function for gas tank account coin instances.
+ *
+ * @param id uuid v4
+ * @param name unique identifier of the coin
+ * @param fullName Complete human-readable name of the coin
+ * @param network Network object for this coin
+ * @param decimalPlaces Number of decimal places this coin supports (divisibility exponent)
+ * @param asset Asset which this coin represents. This is the same for both mainnet and testnet variants of a coin.
+ * @param baseUnit
+ * @param features Features of this coin. Defaults to the DEFAULT_FEATURES defined in `AccountCoin`
+ * @param primaryKeyCurve The elliptic curve for this chain/token
+ * @param gasTankLowBalanceAlertFactor Low gas tank balance alert threshold = (feeEstimate x gasTankLowBalanceAlertFactor)
+ * @param gasTankMinBalanceRecommendationFactor Min gas tank balance recommendation = (feeEstimate x gasTankMinBalanceRecommendationFactor)
+ * @param prefix Optional coin prefix. Defaults to empty string
+ * @param suffix Optional coin suffix. Defaults to coin name.
+ * @param isToken Whether or not this account coin is a token of another coin
+ */
+export function gasTankAccount(
+  id: string,
+  name: string,
+  fullName: string,
+  network: AccountNetwork,
+  decimalPlaces: number,
+  asset: UnderlyingAsset,
+  baseUnit: BaseUnit,
+  features: CoinFeature[] = AccountCoin.DEFAULT_FEATURES,
+  primaryKeyCurve: KeyCurve = KeyCurve.Secp256k1,
+  gasTankLowBalanceAlertFactor = 2,
+  gasTankMinBalanceRecommendationFactor = 10,
+  prefix = '',
+  suffix: string = name.toUpperCase(),
+  isToken = false
+) {
+  return Object.freeze(
+    new GasTankAccountCoin({
+      id,
+      name,
+      fullName,
+      network,
+      prefix,
+      suffix,
+      baseUnit,
+      features,
+      decimalPlaces,
+      isToken,
+      asset,
+      primaryKeyCurve,
+      gasTankLowBalanceAlertFactor,
+      gasTankMinBalanceRecommendationFactor,
     })
   );
 }
@@ -1214,7 +1272,6 @@ export function hederaCoin(
   network: AccountNetwork,
   decimalPlaces: number,
   asset: UnderlyingAsset,
-  nodeAccountId = '0.0.3',
   features: CoinFeature[] = AccountCoin.DEFAULT_FEATURES,
   prefix = '',
   suffix: string = name.toUpperCase(),
@@ -1227,7 +1284,7 @@ export function hederaCoin(
       fullName,
       decimalPlaces,
       asset,
-      nodeAccountId,
+      nodeAccountId: HEDERA_NODE_ACCCOUNT_ID,
       features,
       prefix,
       suffix,
@@ -1263,7 +1320,6 @@ export function hederaToken(
   network: AccountNetwork,
   decimalPlaces: number,
   asset: UnderlyingAsset,
-  nodeAccountId = '0.0.3',
   tokenId: string,
   contractAddress: string,
   features: CoinFeature[] = AccountCoin.DEFAULT_FEATURES,
@@ -1278,7 +1334,7 @@ export function hederaToken(
       fullName,
       decimalPlaces,
       asset,
-      nodeAccountId,
+      nodeAccountId: HEDERA_NODE_ACCCOUNT_ID,
       tokenId,
       contractAddress,
       features,
@@ -1302,7 +1358,6 @@ export function hederaToken(
  * @param fullName Complete human-readable name of the token
  * @param decimalPlaces Number of decimal places this token supports (divisibility exponent)
  * @param asset Asset which this coin represents. This is the same for both mainnet and testnet variants of a coin.
- * @param tokenURL Optional asset Url for more informationa about the asset
  * See https://developer.algorand.org/docs/reference/transactions/#url
  * @param prefix? Optional token prefix. Defaults to empty string
  * @param suffix? Optional token suffix. Defaults to token name.
@@ -1317,7 +1372,6 @@ export function algoToken(
   fullName: string,
   decimalPlaces: number,
   asset: UnderlyingAsset,
-  tokenURL = '',
   features: CoinFeature[] = AccountCoin.DEFAULT_FEATURES,
   prefix = '',
   suffix: string = name.toUpperCase(),
@@ -1332,7 +1386,6 @@ export function algoToken(
       fullName,
       decimalPlaces,
       asset,
-      tokenURL: tokenURL,
       features,
       prefix,
       suffix,
@@ -1353,7 +1406,6 @@ export function algoToken(
  * @param fullName Complete human-readable name of the token
  * @param decimalPlaces Number of decimal places this token supports (divisibility exponent)
  * @param asset Asset which this coin represents. This is the same for both mainnet and testnet variants of a coin.
- * @param tokenURL Optional asset Url for more informationa about the asset
  * See https://developer.algorand.org/docs/reference/transactions/#url
  * @param prefix? Optional token prefix. Defaults to empty string
  * @param suffix? Optional token suffix. Defaults to token name.
@@ -1367,13 +1419,12 @@ export function talgoToken(
   fullName: string,
   decimalPlaces: number,
   asset: UnderlyingAsset,
-  tokenURL = '',
   features: CoinFeature[] = AccountCoin.DEFAULT_FEATURES,
   prefix = '',
   suffix: string = name.toUpperCase(),
   network: AccountNetwork = Networks.test.algorand
 ): Readonly<AlgoCoin> {
-  return algoToken(id, name, alias, fullName, decimalPlaces, asset, tokenURL, features, prefix, suffix, network);
+  return algoToken(id, name, alias, fullName, decimalPlaces, asset, features, prefix, suffix, network);
 }
 
 /**
