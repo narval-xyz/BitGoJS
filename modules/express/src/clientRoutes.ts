@@ -737,7 +737,7 @@ async function handleV2SignTx(req: express.Request) {
   }
 }
 
-export async function handleStaking(req: express.Request): Promise<StakingRequest> {
+export async function handleStaking(req: express.Request) {
  const bitgo = req.bitgo;
  const coin = bitgo.coin(req.params.coin);
  const wallet = await coin.wallets().get({ id: req.params.id });
@@ -749,7 +749,7 @@ export async function handleStaking(req: express.Request): Promise<StakingReques
  return stake;
 }
 
-export async function handleUnstaking(req: express.Request): Promise<StakingRequest> {
+export async function handleUnstaking(req: express.Request) {
  const bitgo = req.bitgo;
  const coin = bitgo.coin(req.params.coin);
  const wallet = await coin.wallets().get({ id: req.params.id });
